@@ -23,17 +23,19 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getAllCategories() async {
     var api = getIt.get<NewsApi>();
-    (await api.getAllCategory())
-        .onSuccess((p0) {
-          for (var element in p0) {
-            categoryList.addAll((element.child ?? []));
-          }
-          setState(() {});
-        })
-        .onMessage((p0) {
-          print(p0);
-    })
-        .onError((p0) {
+    (await api.getAllCategory()).onSuccess((p0) {
+      for (var element in p0) {
+        categoryList.addAll((element.child ?? []));
+      }
+
+      categoryList.forEach((element) {
+        print(element.name);
+      });
+
+      setState(() {});
+    }).onMessage((p0) {
+      print(p0);
+    }).onError((p0) {
       print(p0);
     });
   }
@@ -93,6 +95,7 @@ class _HomePageState extends State<HomePage> {
                   child: SizedBox(
                     height: 36,
                     child: TabBar(
+                      isScrollable : true,
                       physics: const BouncingScrollPhysics(),
                       indicator: const BoxDecoration(
                         color: Colors.black12,

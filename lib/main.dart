@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:newland/di/database_module.dart';
 import 'package:newland/view/home/home_page.dart';
+
+import 'di/database_module.dart';
 
 void main() {
   setUpDatabaseModule();
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      debugShowCheckedModeBanner: false,
       home: const MyHomePage(),
     );
   }

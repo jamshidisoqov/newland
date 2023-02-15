@@ -20,6 +20,7 @@ class _PostItemState extends State<PostItem> {
   @override
   void initState() {
     super.initState();
+    getAllPosts();
   }
 
   Future<void> getAllPosts() async {
