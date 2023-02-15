@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:newland/di/database_module.dart';
 import 'package:newland/view/home/home_page.dart';
 
 void main() {
+  setUpDatabaseModule();
   runApp(const MyApp());
 }
 

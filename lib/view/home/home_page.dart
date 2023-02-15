@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:newland/core/data/api/news_api.dart';
+import 'package:newland/core/data/models/category_data.dart';
+import 'package:newland/di/database_module.dart';
+import 'package:newland/view/home/components/post_item.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -10,6 +13,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    getAllCategories();
+  }
+
+  List<Category> categoryList = [];
+
+  Future<void> getAllCategories() async {
+    var api = getIt.get<NewsApi>();
+    (await api.getAllCategory())
+        .onSuccess((p0) {
+          for (var element in p0) {
+            categoryList.addAll((element.child ?? []));
+          }
+          setState(() {});
+        })
+        .onMessage((p0) {
+          print(p0);
+    })
+        .onError((p0) {
+      print(p0);
+    });
+  }
+
   var currentClickIndex = 0;
 
   void bottomNavigationClick(position) {
@@ -56,45 +84,40 @@ class _HomePageState extends State<HomePage> {
           unselectedFontSize: 12,
         ),
         body: DefaultTabController(
-          length: 3,
+          length: categoryList.length,
           child: Scaffold(
             body: Column(
-              children: const [
+              children: [
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
                     height: 36,
                     child: TabBar(
-                      physics: BouncingScrollPhysics(),
-                      indicator: BoxDecoration(
+                      physics: const BouncingScrollPhysics(),
+                      indicator: const BoxDecoration(
                         color: Colors.black12,
                         borderRadius: BorderRadius.all(
                           Radius.circular(8),
                         ),
                       ),
                       indicatorSize: TabBarIndicatorSize.tab,
-                      tabs: [
-                        Tab(
-                          text: "Transports",
-                        ),
-                        Tab(
-                          text: "Transports",
-                        ),
-                        Tab(
-                          text: "Transports",
-                        ),
-                      ],
+                      tabs: List.generate(
+                          categoryList.length,
+                          (index) => Tab(
+                                text: categoryList[index].name,
+                              )),
                       labelColor: Colors.black,
                     ),
                   ),
                 ),
                 Expanded(
                   child: TabBarView(
-                    children: [
-                      Icon(Icons.directions_car),
-                      Icon(Icons.directions_transit),
-                      Icon(Icons.directions_bike),
-                    ],
+                    children: List.generate(
+                      categoryList.length,
+                      (index) => PostItem(
+                        category: categoryList[index],
+                      ),
+                    ),
                   ),
                 )
               ],
